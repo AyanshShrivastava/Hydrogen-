@@ -1,0 +1,269 @@
+{
+  "entities": {
+    "UserProfile": {
+      "title": "UserProfile",
+      "description": "Authenticated Stroke user profile and cloud-synced IDE preferences.",
+      "type": "object",
+      "properties": {
+        "uid": {
+          "type": "string",
+          "description": "Firebase Auth UID matching the document ID.",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "email": {
+          "type": "string",
+          "format": "email",
+          "description": "User email address from Firebase Auth.",
+          "maxLength": 320
+        },
+        "displayName": {
+          "type": "string",
+          "description": "User display label shown in Stroke.",
+          "maxLength": 120
+        },
+        "authProvider": {
+          "type": "string",
+          "enum": ["password", "google", "other"],
+          "description": "Primary Firebase Authentication method."
+        },
+        "designId": {
+          "type": "string",
+          "enum": ["obsidian", "paper", "nordic", "monochrome"],
+          "description": "Selected UI visual theme preset."
+        },
+        "surfaceRadius": {
+          "type": "string",
+          "enum": ["sharp", "balanced", "soft"],
+          "description": "Selected panel corner radius mode."
+        },
+        "editorFontSize": {
+          "type": "number",
+          "description": "Monospace editor and terminal font size in px (12-15)."
+        },
+        "layoutMode": {
+          "type": "string",
+          "enum": ["standard", "focus"],
+          "description": "Desktop multi-pane layout mode."
+        },
+        "thinkingLevel": {
+          "type": "string",
+          "enum": ["LOW", "MEDIUM", "HIGH", "XHIGH"],
+          "description": "Preferred Gemini 4 Hydrogen reasoning depth."
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server creation timestamp."
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server last-updated timestamp."
+        }
+      },
+      "required": [
+        "uid",
+        "email",
+        "displayName",
+        "authProvider",
+        "designId",
+        "surfaceRadius",
+        "editorFontSize",
+        "layoutMode",
+        "thinkingLevel",
+        "createdAt",
+        "updatedAt"
+      ]
+    },
+    "WorkspaceFileDoc": {
+      "title": "WorkspaceFileDoc",
+      "description": "Cloud-synced workspace source file snapshot belonging to an authenticated user.",
+      "type": "object",
+      "properties": {
+        "ownerId": {
+          "type": "string",
+          "description": "Owner Firebase Auth UID.",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "path": {
+          "type": "string",
+          "description": "Relative workspace file path.",
+          "minLength": 1,
+          "maxLength": 260
+        },
+        "content": {
+          "type": "string",
+          "description": "UTF-8 file contents.",
+          "maxLength": 200000
+        },
+        "size": {
+          "type": "number",
+          "description": "Byte size of the file."
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server creation timestamp."
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server last-updated timestamp."
+        }
+      },
+      "required": ["ownerId", "path", "content", "size", "createdAt", "updatedAt"]
+    },
+    "AssistantMessageDoc": {
+      "title": "AssistantMessageDoc",
+      "description": "Persisted Gemini 4 Hydrogen chat turn belonging to an authenticated user.",
+      "type": "object",
+      "properties": {
+        "ownerId": {
+          "type": "string",
+          "description": "Owner Firebase Auth UID.",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "role": {
+          "type": "string",
+          "enum": ["user", "assistant"],
+          "description": "Message author role."
+        },
+        "content": {
+          "type": "string",
+          "description": "Message markdown or plain text body.",
+          "maxLength": 32000
+        },
+        "thinkingLevel": {
+          "type": "string",
+          "enum": ["LOW", "MEDIUM", "HIGH", "XHIGH"],
+          "description": "Thinking depth used for the turn."
+        },
+        "toolSummary": {
+          "type": "string",
+          "description": "Compact summary of invoked workspace, terminal, and MCP tools.",
+          "maxLength": 4000
+        },
+        "error": {
+          "type": "string",
+          "description": "Optional error string if the turn failed.",
+          "maxLength": 1000
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server creation timestamp."
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server last-updated timestamp."
+        }
+      },
+      "required": ["ownerId", "role", "content", "thinkingLevel", "toolSummary", "error", "createdAt", "updatedAt"]
+    },
+    "McpBookmarkDoc": {
+      "title": "McpBookmarkDoc",
+      "description": "Non-secret MCP server connection metadata synced per authenticated user.",
+      "type": "object",
+      "properties": {
+        "ownerId": {
+          "type": "string",
+          "description": "Owner Firebase Auth UID.",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "serverId": {
+          "type": "string",
+          "description": "MCP server registry identifier.",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "name": {
+          "type": "string",
+          "description": "Display name of the MCP server.",
+          "minLength": 1,
+          "maxLength": 120
+        },
+        "description": {
+          "type": "string",
+          "description": "Short summary of the MCP server.",
+          "maxLength": 500
+        },
+        "transport": {
+          "type": "string",
+          "enum": ["builtin", "http"],
+          "description": "MCP transport mechanism."
+        },
+        "endpointUrl": {
+          "type": "string",
+          "description": "MCP endpoint URL or builtin:// URI.",
+          "minLength": 1,
+          "maxLength": 500
+        },
+        "authType": {
+          "type": "string",
+          "enum": ["none", "bearer", "api_key", "oauth2_client_credentials", "basic"],
+          "description": "Authentication scheme name (secrets remain strictly server-side)."
+        },
+        "enabled": {
+          "type": "boolean",
+          "description": "Whether the server is enabled for the assistant."
+        },
+        "lastStatus": {
+          "type": "string",
+          "enum": ["disconnected", "connecting", "connected", "auth_error", "error"],
+          "description": "Latest observed MCP connection state."
+        },
+        "toolCount": {
+          "type": "number",
+          "description": "Count of advertised MCP tools."
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server creation timestamp."
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server last-updated timestamp."
+        }
+      },
+      "required": [
+        "ownerId",
+        "serverId",
+        "name",
+        "description",
+        "transport",
+        "endpointUrl",
+        "authType",
+        "enabled",
+        "lastStatus",
+        "toolCount",
+        "createdAt",
+        "updatedAt"
+      ]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": { "$ref": "#/entities/UserProfile" },
+      "description": "Private user profile and synced UI/assistant preferences."
+    },
+    "/users/{userId}/files/{fileId}": {
+      "schema": { "$ref": "#/entities/WorkspaceFileDoc" },
+      "description": "Cloud-backed source file snapshots scoped to a single user."
+    },
+    "/users/{userId}/messages/{messageId}": {
+      "schema": { "$ref": "#/entities/AssistantMessageDoc" },
+      "description": "Persisted Gemini 4 Hydrogen chat history scoped to a single user."
+    },
+    "/users/{userId}/mcpServers/{serverId}": {
+      "schema": { "$ref": "#/entities/McpBookmarkDoc" },
+      "description": "Non-secret MCP server metadata bookmarks scoped to a single user."
+    }
+  }
+}

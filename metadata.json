@@ -1,0 +1,6 @@
+{
+  "name": "Hydrogen Code Studio",
+  "description": "Coding assistant powered by Gemini 4 Hydrogen with an integrated workspace terminal and authenticated MCP server connections.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
